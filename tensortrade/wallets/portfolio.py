@@ -236,8 +236,11 @@ class Portfolio(Component, TimedIdentifiable, FeedListener):
             self._initial_net_worth = net_worth
             self._net_worth = net_worth
         else:
-            self._performance = self._performance.append(performance_step)
-            self._net_worth = net_worth
+            try:
+                self._performance = self._performance.append(performance_step, verify_integrity=True)
+                self._net_worth = net_worth
+            except ValueError:
+                pass  # ignored since the index step already exists
 
         if self._performance_listener:
             self._performance_listener(performance_step)
